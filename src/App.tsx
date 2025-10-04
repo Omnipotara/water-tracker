@@ -1,8 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 function App() {
-  const [counter, updateCounter] = useState(0);
+  const [counter, updateCounter] = useState(() => {
+    const storedCounter = parseInt(localStorage.getItem("waterCounter") || "0");
+    return storedCounter;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("waterCounter", counter.toString());
+  }, [counter]);
+
   var message;
   if (counter < 8) {
     message = <h1>{counter} / 8 cups of water drank today</h1>;
@@ -27,12 +35,19 @@ function App() {
       {counter < 8 ? (
         <button
           className="water-button"
-          onClick={() => updateCounter(counter + 1)}
+          onClick={() => {
+            updateCounter(counter + 1);
+          }}
         >
           Drink a cup of water
         </button>
       ) : (
-        <button className="water-button" onClick={() => updateCounter(0)}>
+        <button
+          className="water-button"
+          onClick={() => {
+            updateCounter(0);
+          }}
+        >
           Reset the counter
         </button>
       )}
